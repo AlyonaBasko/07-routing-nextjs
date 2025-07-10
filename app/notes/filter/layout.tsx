@@ -1,6 +1,7 @@
 import React from "react";
 import css from './LayoutNotes.module.css';
 
+
 interface NotesListProps {
     children: React.ReactNode;
     sidebar: React.ReactNode;

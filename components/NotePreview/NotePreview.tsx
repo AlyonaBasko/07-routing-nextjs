@@ -1,36 +1,37 @@
-'use client';
+"use client";
 
-import { useQuery } from '@tanstack/react-query';
-import { getNoteById } from '@/lib/api';
-import { Note } from '@/types/note';
-import css from './NotePreview.module.css';
+import css from "./NotePreview.module.css";
+import { Note } from "@/types/note";
+import { useRouter } from "next/navigation";
 
-type NotePreviewProps = {
-  noteId: string;
-};
+interface NotePreviewProps {
+  note: Note;
+  onClose?: () => void;
+}
 
-export default function NotePreview({ noteId }: NotePreviewProps) {
-  const {
-    data: note,
-    isLoading,
-    isError,
-    error,
-  } = useQuery<Note, Error>({
-    queryKey: ['note', noteId],
-    queryFn: () => getNoteById(noteId),
-  });
+export default function NotePreview({ note, onClose }: NotePreviewProps) {
+  const router = useRouter();
 
-  if (isLoading) return <p className={css.message}>Loading note...</p>;
-  if (isError) return <p className={css.message}>Error: {error.message}</p>;
-  if (!note) return <p className={css.message}>Note not found</p>;
+  const handleClose = () => {
+    if (onClose) {
+      onClose();
+    } else {
+      router.back();
+    }
+  };
 
   return (
-    <div className={css.previewContainer}>
-      <h2 className={css.title}>{note.title}</h2>
-      <p className={css.content}>{note.content}</p>
-      <p className={css.meta}>
-        <strong>Tag:</strong> {note.tag}
-      </p>
+    <div className={css.container}>
+      <div className={css.item}>
+        <div className={css.header}>
+          <h2>{note.title}</h2>
+          <button className={css.backBtn} onClick={handleClose}>
+            Go back
+          </button>
+        </div>
+        <p className={css.content}>{note.content}</p>
+        <p className={css.date}>{note.createdAt}</p>
+      </div>
     </div>
   );
 }

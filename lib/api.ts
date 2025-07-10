@@ -1,4 +1,4 @@
-import { Note, FormValues } from '@/types/note';
+import { Note, FormValues, NoteListResponse } from '@/types/note';
 import axios from 'axios'
 
 const API_BASE = 'https://notehub-public.goit.study/api';
@@ -10,6 +10,11 @@ const axiosInstance = axios.create({
     Authorization: `Bearer ${token}`,
   },
 });
+
+export interface FetchNoteService {
+  notes: Note[];
+  totalPages: number;
+}
 
 export interface FetchNotesParams {
   page?: number;
@@ -63,9 +68,9 @@ export const fetchNoteById = async (id: number) => {
 };
 
 
-export async function getNoteById(id: string): Promise<Note> {
-  const response = await axios.get(`/api/notes/${id}`);
-  return response.data;
-}
-
-
+export const getNotes = async (categoryId?: string) => {
+  const res = await axios.get<NoteListResponse>('/notes', {
+    params: { categoryId },
+  });
+  return res.data;
+};

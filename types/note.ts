@@ -14,3 +14,7 @@ export interface FormValues {
   content: string;
   tag: NoteTag;
 }
+
+export interface NoteListResponse {
+  notes: Note[];
+}

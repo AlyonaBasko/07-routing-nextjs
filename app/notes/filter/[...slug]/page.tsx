@@ -1,20 +1,17 @@
-import NotesClient from './NotesСlient';
-import { fetchNotes } from '@/lib/api';
+import { fetchNotes } from "@/lib/api";
+import NotesClient from "./Notes.client";
 
 type FilteredNotesPageProps = {
-  params: { slug: string[] };
+  params: Promise<{ slug: string[] }>;
 };
 
-export default async function FilteredNotesPage({ params }: FilteredNotesPageProps) {
-  const tag = params.slug[0] === 'All' ? undefined : params.slug[0];
+export default async function FilteredNotesPage({
+  params,
+}: FilteredNotesPageProps) {
+  const { slug } = await params;
+  const tag = slug[0] === "All" ? undefined : slug[0];
 
-  const initialData = await fetchNotes({ search: '', page: 1, perPage: 12, tag });
+  const data = await fetchNotes({ page: 1, search: "", perPage: 12, tag });
 
-  return (
-    <NotesClient
-      initialNotes={initialData.notes}
-      initialTotalPages={initialData.totalPages}
-      tag={tag}
-    />
-  );
+  return <NotesClient initialData={data} tag={tag} />;
 }
