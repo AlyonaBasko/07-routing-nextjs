@@ -1,17 +1,16 @@
-import React from "react";
-import css from './LayoutNotes.module.css';
 
 
-interface NotesListProps {
-    children: React.ReactNode;
-    sidebar: React.ReactNode;
-};
-
-export default function NotesLayout({ children, sidebar }: NotesListProps) {
-    return (
-        <div className={css.container}>
-            <aside className={css.sidebar}>{sidebar}</aside>
-            <main className={css.notesWrapper}>{children}</main>
-        </div>
-    );
+export default function NotesLayout({
+  children,
+  sidebar,
+}: {
+  children: React.ReactNode;
+  sidebar: React.ReactNode;
+}) {
+  return (
+    <div style={{ display: "flex", gap: "2rem" }}>
+      <aside>{sidebar}</aside>
+      <main style={{ flex: 1 }}>{children}</main>
+    </div>
+  );
 }
