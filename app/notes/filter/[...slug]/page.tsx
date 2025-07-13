@@ -11,12 +11,7 @@ export default async function FilteredNotesPage({
   const { slug } = await params;
   const tag = slug[0] === "All" ? undefined : slug[0];
 
-  const data = await fetchNotes({
-  page: 1,
-  search: "",
-  perPage: 12,
-  tag,
-});
+  const data = await fetchNotes(1, "", 12, tag);
 
   return <NotesClient initialData={data} tag={tag} />;
 }

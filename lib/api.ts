@@ -30,17 +30,18 @@ export interface FetchNotesResponse {
   totalNotes: number;
 }
 
-export async function fetchNotes({
+export const fetchNotes = async (
   page = 1,
+  query = "",
   perPage = 12,
-  search = '',
-}: FetchNotesParams = {}): Promise<FetchNotesResponse> {
+  tag?: string
+): Promise<FetchNoteService> => {
   const params: Record<string, string | number> = { page, perPage };
-  if (search.trim()) params.search = search.trim();
-
-  const { data } = await axiosInstance.get<FetchNotesResponse>('/notes', { params });
-  return data;
-}
+  if (query) params.search = query;
+  if (tag && tag !== `All`) params.tag = tag;
+  const res = await axiosInstance.get<FetchNoteService>("/notes", { params });
+  return res.data;
+};
 
 export interface CreateNoteParams {
   title: string;

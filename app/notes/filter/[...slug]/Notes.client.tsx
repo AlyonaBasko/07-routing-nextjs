@@ -4,7 +4,7 @@ import { useState } from "react";
 import { fetchNotes } from "@/lib/api";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { useDebounce } from "use-debounce";
-import type { FetchNotesResponse } from "@/lib/api";
+import type { FetchNoteService } from "@/lib/api";
 import css from "./NotesPage.module.css";
 import NoteList from "@/components/NoteList/NoteList";
 import Modal from "@/components/Modal/Modal";
@@ -13,7 +13,7 @@ import SearchBox from "@/components/SearchBox/SearchBox";
 import Pagination from "@/components/Pagination/Pagination";
 
 interface NotesClientProps {
-  initialData: FetchNotesResponse;
+  initialData: FetchNoteService;
   tag?: string;
 }
 
@@ -24,14 +24,12 @@ export default function NotesClient({ initialData, tag }: NotesClientProps) {
   const [debounceSearchTerm] = useDebounce(searchTerm, 1000);
   const perPage = 12;
 
- const { data, isLoading, isError } = useQuery({
-  queryKey: ["notes", currentPage, debounceSearchTerm, tag],
-  queryFn: () =>
-    fetchNotes({ page: currentPage, search: debounceSearchTerm, perPage, tag }),
-  placeholderData: keepPreviousData,
-  initialData,
-});
-
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["notes", currentPage, debounceSearchTerm, tag],
+    queryFn: () => fetchNotes(currentPage, debounceSearchTerm, perPage, tag),
+    placeholderData: keepPreviousData,
+    initialData,
+  });
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -47,9 +45,9 @@ export default function NotesClient({ initialData, tag }: NotesClientProps) {
         <SearchBox value={searchTerm} onChange={handleSearchChange} />
         {data && data.totalPages > 1 && (
           <Pagination
-              currentPage={currentPage}
-              pageCount={data.totalPages}  
-              onPageChange={setCurrentPage}
+            currentPage={currentPage}
+            pageCount={data.totalPages}
+            onPageChange={setCurrentPage}
           />
         )}
         <button className={css.button} onClick={openModal}>
@@ -61,7 +59,7 @@ export default function NotesClient({ initialData, tag }: NotesClientProps) {
       {data && <NoteList notes={data.notes} />}
       {isModalOpen && (
         <Modal onClose={closeModal}>
-          <NoteForm onClose={closeModal} />
+          <NoteForm onClose={closeModal}/>
         </Modal>
       )}
     </div>
