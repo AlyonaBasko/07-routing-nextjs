@@ -1,5 +1,5 @@
-import { Note, FormValues, NoteListResponse } from '@/types/note';
-import axios from 'axios'
+import { Note, FormValues } from '@/types/note';
+import axios from 'axios';
 
 const API_BASE = 'https://notehub-public.goit.study/api';
 const token = process.env.NEXT_PUBLIC_NOTEHUB_TOKEN;
@@ -23,13 +23,6 @@ export interface FetchNotesParams {
   tag?: string;
 }
 
-export interface FetchNotesResponse {
-  length: number;
-  notes: Note[];
-  totalPages: number;
-  totalNotes: number;
-}
-
 export const fetchNotes = async (
   page = 1,
   query = "",
@@ -38,7 +31,7 @@ export const fetchNotes = async (
 ): Promise<FetchNoteService> => {
   const params: Record<string, string | number> = { page, perPage };
   if (query) params.search = query;
-  if (tag && tag !== `All`) params.tag = tag;
+  if (tag && tag !== "All") params.tag = tag;
   const res = await axiosInstance.get<FetchNoteService>("/notes", { params });
   return res.data;
 };
@@ -46,7 +39,7 @@ export const fetchNotes = async (
 export interface CreateNoteParams {
   title: string;
   content?: string;
-  tag?: string; 
+  tag?: string;
 }
 
 export async function createNote(note: FormValues): Promise<Note> {
@@ -64,15 +57,7 @@ export async function deleteNote(id: number): Promise<DeleteNoteResponse> {
   return data;
 }
 
-export const fetchNoteById = async (id: number) => {
+export const fetchNoteById = async (id: number): Promise<Note> => {
   const { data } = await axiosInstance.get<Note>(`/notes/${id}`);
   return data;
-};
-
-
-export const getNotes = async (categoryId?: string) => {
-  const res = await axios.get<NoteListResponse>('/notes', {
-    params: { categoryId },
-  });
-  return res.data;
 };
